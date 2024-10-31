@@ -1,0 +1,25 @@
+{
+  "name": "paytm-backend",
+  "version": "1.0.0",
+  "description": "This is a backend of an app which can make transactions",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "paytm",
+    "paytm-backend"
+  ],
+  "author": "nishantattrey07",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.20.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.1",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.7.3",
+    "nodemon": "^3.1.7",
+    "zod": "^3.23.8"
+  }
+}
