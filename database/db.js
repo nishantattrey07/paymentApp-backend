@@ -1,32 +1,3 @@
-
-
-
-// const userSchema = new db.Schema({
-//     username: { type: String, required: true, unique: true},
-//     firstName: { type: String, required:true },
-//     lastName: { type: String },
-//     password: { type: String, required: true, minLength: 6 },
-//     accounts: [{ type: Schema.Types.ObjectId, ref: 'Account' }]
-// })
-
-
-// const accountSchema = new db.Schema({
-//     userId: {
-//         type: mongoose.Schema.Types.ObjectId,
-//         ref: 'User',
-//         required: true
-//     },
-//     balance: {
-//         type: Number,
-//         required: true
-//     }
-// });
-
-// const Account = db.model('Account', accountSchema);
-
-// const User = db.model("User", userSchema);
-// module.exports = {User,Account}
-
 const mongoose = require('mongoose');
 require('dotenv').config();
 
