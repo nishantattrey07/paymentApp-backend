@@ -142,4 +142,51 @@ router.get('/bulk', async (req, res) => {
 
 })
 
+router.get('/profile', authMiddleware, async (req, res) => { 
+    const userId = req.userId;
+    const user = await User.findOne({ _id: userId })
+    res.status(200).json({
+        firstName: user.firstName,
+        lastName: user.lastName,
+        username: user.username,
+        _id: user._id
+    })
+
+})
+
+router.get('/searchUsers', authMiddleware, async (req, res) => {
+    const userId = req.userId;
+    const { query } = req.body;
+    const page = 1;
+    const limit = 5;
+
+    try {
+        if (!query) {
+            const response = await User.find({_id:{ $ne: userId }}).sort({ lastActive: -1 }).limit(parseInt(limit));
+            return res.status(200).json(response);
+        }
+        const response = await User.find({ username: { $regex: query, $options: 'i' }, _id: {$ne:userId} }).limit(parseInt(limit))
+            .skip((parseInt(page) - 1) * parseInt(limit));
+        return res.status(200).json({
+            user: response.map((user) => { 
+                return {
+                    firstName: user.firstName,
+                    lastName: user.lastName,
+                    username: user.username,
+                    _id: user._id
+                }
+            })
+        });
+
+    
+    }
+    catch (err) {
+        console.error("Error searching users:", err);
+        return res.status(500).json({ error: 'Internal Server Error' })
+    }
+
+    
+    
+ })
+
 module.exports=router

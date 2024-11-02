@@ -6,17 +6,25 @@ const session = mongoose.connect(process.env.mongodb)
     .catch(err => console.error('MongoDB connection error:', err));
 
 const userSchema = new mongoose.Schema({
-    username: { type: String, required: true,unique:true },
+    username: { type: String, required: true, unique: true,index:true },
+    email: {type:String,default:null},
     firstName: { type: String, required: true },
     lastName: { type: String },
-    password: { type: String, required: true, minLength: 6 }
+    password: { type: String, required: true, minLength: 6 },
+    lastActive: { type: Date, default: Date.now }
 });
+
+userSchema.pre('save', function (next) { 
+    this.lastActive = Date.now();
+    next();
+})
 
 const accountSchema = new mongoose.Schema({
     userId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
-        required: true
+        required: true,
+        index:true
     },
     balance: {
         type: Number,
