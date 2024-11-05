@@ -156,37 +156,32 @@ router.get('/profile', authMiddleware, async (req, res) => {
 
 router.get('/searchUsers', authMiddleware, async (req, res) => {
     const userId = req.userId;
-    const { query } = req.body;
-    const page = 1;
-    const limit = 5;
+    const { query = "", page = 1, limit = 5 } = req.query;
 
     try {
-        if (!query) {
-            const response = await User.find({_id:{ $ne: userId }}).sort({ lastActive: -1 }).limit(parseInt(limit));
-            return res.status(200).json(response);
+        let response;
+        if (query.trim()==="default") {
+            response = await User.find({ _id: { $ne: userId } })
+                .sort({ lastActive: -1 })
+                .limit(parseInt(limit));
+        } else {
+            response = await User.find({ username: { $regex: query, $options: 'i' }, _id: { $ne: userId } })
+                .limit(parseInt(limit))
+                .skip((parseInt(page) - 1) * parseInt(limit));
         }
-        const response = await User.find({ username: { $regex: query, $options: 'i' }, _id: {$ne:userId} }).limit(parseInt(limit))
-            .skip((parseInt(page) - 1) * parseInt(limit));
-        return res.status(200).json({
-            user: response.map((user) => { 
-                return {
-                    firstName: user.firstName,
-                    lastName: user.lastName,
-                    username: user.username,
-                    _id: user._id
-                }
-            })
-        });
 
-    
-    }
-    catch (err) {
+        const users = response.map((user) => ({
+            firstName: user.firstName,
+            lastName: user.lastName,
+            username: user.username,
+            _id: user._id
+        }));
+
+        return res.status(200).json({ users });
+    } catch (err) {
         console.error("Error searching users:", err);
-        return res.status(500).json({ error: 'Internal Server Error' })
+        return res.status(500).json({ error: 'Internal Server Error' });
     }
-
-    
-    
- })
+});
 
 module.exports=router

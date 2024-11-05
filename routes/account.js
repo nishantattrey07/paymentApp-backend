@@ -8,7 +8,7 @@ const router = express.Router();
 
 const receiverSchema = z.object({
     to: z.string(),
-    amount: z.number()
+    amount: z.string()
 })
 
 router.get('/',(req, res) => { 
@@ -28,6 +28,7 @@ router.post('/transfer', authMiddleware, async (req, res) => {
     const receiver = req.body;
     const userId = req.userId;
     const result = receiverSchema.safeParse(receiver);
+    
     if (!result.success) { 
         return res.status(400).json({
             message:"Invalid details"
